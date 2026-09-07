@@ -163,21 +163,10 @@ export async function inviteAdminUser({ fullName, email, role }) {
     .toLowerCase();
   const databaseRole = roleToDatabase(role);
 
-  if (!cleanName) {
-    throw new Error("Full name is required.");
+  if (!cleanName || !cleanEmail) {
+    throw new Error("Name and Email are required.");
   }
 
-  if (!cleanEmail) {
-    throw new Error("Email is required.");
-  }
-
-  if (
-    !["owner", "admin", "manager", "editor", "support"].includes(databaseRole)
-  ) {
-    throw new Error("Invalid role.");
-  }
-
-  // 1. استدعاء دالة RPC في قاعدة البيانات لإضافة العضو وإرسال إيميل الدعوة
   const { data, error } = await supabase.rpc("invite_admin_user", {
     user_email: cleanEmail,
     user_name: cleanName,
