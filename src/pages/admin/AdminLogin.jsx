@@ -19,64 +19,91 @@ export default function AdminLogin() {
 
     try {
       await signIn(email, password);
-
       navigate("/admin");
-    } catch (error) {
-      console.error(error);
-
-      setError(error.message || "حدث خطأ أثناء تسجيل الدخول");
+    } catch (err) {
+      console.error(err);
+      setError(err.message || "Invalid credentials. Please try again.");
     } finally {
       setLoading(false);
     }
   };
 
   return (
-    <div className="min-h-screen bg-background text-foreground flex items-center justify-center p-6">
+    <div className="min-h-screen bg-background text-foreground flex items-center justify-center p-4 sm:p-6 transition-colors duration-200">
       <div className="w-full max-w-md">
-        <div className="bg-white rounded-2xl shadow-lg p-8">
-          <h1 className="text-3xl font-bold mb-2">Admin Login</h1>
+        <div className="bg-card border border-border rounded-2xl shadow-2xl p-8 space-y-8">
+          {/* Header Section */}
+          <div className="space-y-2 text-center sm:text-left">
+            <h1 className="text-3xl font-extrabold tracking-tight">
+              Admin Portal
+            </h1>
+            <p className="text-muted-foreground text-sm">
+              Enter your account details to access the dashboard
+            </p>
+          </div>
 
-          <p className="text-gray-500 mb-8">سجل الدخول لإدارة المتجر</p>
-
+          {/* Form */}
           <form onSubmit={handleSubmit} className="space-y-5">
-            <div>
-              <label className="block mb-2 font-medium">Email</label>
-
+            <div className="space-y-2">
+              <label className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">
+                Email Address
+              </label>
               <input
                 type="email"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 required
-                className="w-full border rounded-lg px-4 py-3 outline-none focus:ring-2 focus:ring-primary"
+                className="w-full bg-background border border-input text-foreground rounded-xl px-4 py-3 text-sm outline-none focus:ring-2 focus:ring-primary focus:border-primary transition-all placeholder:text-muted-foreground/60"
                 placeholder="admin@example.com"
               />
             </div>
 
-            <div>
-              <label className="block mb-2 font-medium">Password</label>
-
+            <div className="space-y-2">
+              <label className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">
+                Password
+              </label>
               <input
                 type="password"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
                 required
-                className="w-full border rounded-lg px-4 py-3 outline-none focus:ring-2 focus:ring-primary"
+                className="w-full bg-background border border-input text-foreground rounded-xl px-4 py-3 text-sm outline-none focus:ring-2 focus:ring-primary focus:border-primary transition-all placeholder:text-muted-foreground/60"
                 placeholder="••••••••"
               />
             </div>
 
+            {/* Error Message */}
             {error && (
-              <div className="bg-red-50 text-red-600 p-3 rounded-lg">
-                {error}
+              <div className="bg-destructive/10 text-destructive border border-destructive/20 p-3.5 rounded-xl text-sm font-medium flex items-center gap-2">
+                <svg
+                  className="w-4 h-4 shrink-0"
+                  fill="currentColor"
+                  viewBox="0 0 20 20"
+                >
+                  <path
+                    fillRule="evenodd"
+                    d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z"
+                    clipRule="evenodd"
+                  />
+                </svg>
+                <span>{error}</span>
               </div>
             )}
 
+            {/* Submit Button */}
             <button
               type="submit"
               disabled={loading}
-              className="w-full bg-primary text-white py-3 rounded-lg font-bold disabled:opacity-50"
+              className="w-full bg-primary text-primary-foreground py-3 px-4 rounded-xl font-semibold hover:bg-primary/90 focus:outline-none focus:ring-2 focus:ring-primary active:scale-[0.98] transition-all disabled:opacity-50 disabled:pointer-events-none shadow-md flex items-center justify-center gap-2"
             >
-              {loading ? "جاري تسجيل الدخول..." : "تسجيل الدخول"}
+              {loading ? (
+                <>
+                  <div className="w-4 h-4 border-2 border-primary-foreground border-t-transparent rounded-full animate-spin" />
+                  <span>Signing in...</span>
+                </>
+              ) : (
+                "Sign In"
+              )}
             </button>
           </form>
         </div>
