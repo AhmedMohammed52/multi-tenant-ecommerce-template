@@ -1,0 +1,62 @@
+export const mockProducts = [
+  {
+    id: "1",
+    name: "Classic Leather Jacket",
+    sku: "JKT-LEA-01",
+    shortDescription: "Premium genuine leather jacket for modern look.",
+    description:
+      "Crafted from 100% genuine full-grain leather. Designed with durability and timeless fashion in mind.",
+    slug: "classic-leather-jacket",
+    price: 3490,
+    compareAtPrice: 4200,
+    costPerItem: 1800,
+    trackQuantity: true,
+    quantity: 15,
+    lowStockThreshold: 5,
+    status: "active",
+    category: "Apparel",
+    collection: "Winter Collection",
+    image:
+      "https://images.unsplash.com/photo-1551028719-00167b16eac5?w=500&auto=format&fit=crop&q=60",
+  },
+  {
+    id: "2",
+    name: "Premium Leather Sneakers",
+    sku: "SNK-PRM-01",
+    shortDescription: "Full-grain leather sneakers with a cushioned insole.",
+    description:
+      "Hand-finished full-grain leather upper with flexible rubber sole.",
+    slug: "premium-leather-sneakers",
+    price: 1890,
+    compareAtPrice: 2200,
+    costPerItem: 980,
+    trackQuantity: true,
+    quantity: 42,
+    lowStockThreshold: 10,
+    status: "active",
+    category: "Footwear",
+    collection: "Best Sellers",
+    image:
+      "https://images.unsplash.com/photo-1549298916-b41d501d3772?w=500&auto=format&fit=crop&q=60",
+  },
+  {
+    id: "3",
+    name: "Minimalist Watch",
+    sku: "WTC-MIN-03",
+    shortDescription: "Sleek stainless steel watch with minimal design.",
+    description:
+      "Water-resistant up to 50m with sapphire crystal glass protection.",
+    slug: "minimalist-watch",
+    price: 1250,
+    compareAtPrice: 1500,
+    costPerItem: 600,
+    trackQuantity: true,
+    quantity: 8,
+    lowStockThreshold: 3,
+    status: "active",
+    category: "Accessories",
+    collection: "Trending",
+    image:
+      "https://images.unsplash.com/photo-1523275335684-37898b6baf30?w=500&auto=format&fit=crop&q=60",
+  },
+];
