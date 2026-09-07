@@ -39,7 +39,7 @@ export const getInitials = (name, email) => {
 };
 
 export const formatLastActive = (value, status) => {
-  if (status === "invited") {
+  if (status === "invited" || status === "pending") {
     return "Invite pending";
   }
 
@@ -56,9 +56,7 @@ export const formatLastActive = (value, status) => {
   const diff = Date.now() - date.getTime();
 
   const minutes = Math.floor(diff / 60000);
-
   const hours = Math.floor(minutes / 60);
-
   const days = Math.floor(hours / 24);
 
   if (minutes < 1) {
@@ -94,37 +92,21 @@ const normalizeUser = (user) => {
     String(user.email || "").split("@")[0] ||
     "User";
 
+  const userStatus = user.status || (user.invited_at ? "invited" : "active");
+
   return {
     id: user.id,
     name,
     email: user.email || "",
     initials: getInitials(name, user.email),
     role: roleToLabel(user.role),
-    status: user.status || "active",
-    lastActive: formatLastActive(user.last_active, user.status),
+    status: userStatus,
+    lastActive: formatLastActive(user.last_active, userStatus),
   };
 };
 
 export async function getAdminUsers() {
-  const {
-    data: { user },
-    error: userError,
-  } = await supabase.auth.getUser();
-
-  console.log("CURRENT AUTH USER:", user);
-  console.log("AUTH USER ERROR:", userError);
-
-  const { data: storeId, error: storeError } = await supabase.rpc(
-    "get_current_store_id",
-  );
-
-  console.log("CURRENT STORE ID:", storeId);
-  console.log("CURRENT STORE ERROR:", storeError);
-
   const { data, error } = await supabase.rpc("get_admin_users");
-
-  console.log("ADMIN USERS DATA:", data);
-  console.log("ADMIN USERS ERROR:", error);
 
   if (error) {
     throw new Error(error.message || "Failed to load admin users.");
@@ -179,7 +161,6 @@ export async function inviteAdminUser({ fullName, email, role }) {
   const cleanEmail = String(email || "")
     .trim()
     .toLowerCase();
-
   const databaseRole = roleToDatabase(role);
 
   if (!cleanName) {
@@ -196,53 +177,18 @@ export async function inviteAdminUser({ fullName, email, role }) {
     throw new Error("Invalid role.");
   }
 
-  // Get current store ID
-  const { data: storeId, error: storeError } = await supabase.rpc(
-    "get_current_store_id",
-  );
-
-  if (storeError) {
-    throw new Error(storeError.message || "Failed to get current store.");
-  }
-
-  if (!storeId) {
-    throw new Error("No active store found.");
-  }
-
-  const { data, error } = await supabase.functions.invoke("admin-users", {
-    body: {
-      action: "invite",
-      storeId,
-      fullName: cleanName,
-      email: cleanEmail,
-      role: databaseRole,
-    },
+  // 1. استدعاء دالة RPC في قاعدة البيانات لإضافة العضو وإرسال إيميل الدعوة
+  const { data, error } = await supabase.rpc("invite_admin_user", {
+    user_email: cleanEmail,
+    user_name: cleanName,
+    user_role: databaseRole,
+    redirect_url:
+      "https://multi-tenant-ecommerce-template.vercel.app/auth/accept-invite",
   });
 
   if (error) {
-    console.error("INVITE EDGE FUNCTION ERROR:", error);
-
-    let message = error.message || "Failed to invite user.";
-
-    try {
-      if (error.context) {
-        const response = await error.context.json();
-
-        console.error("EDGE FUNCTION RESPONSE:", response);
-
-        if (response?.message) {
-          message = response.message;
-        }
-      }
-    } catch (parseError) {
-      console.error("Failed to parse Edge Function response:", parseError);
-    }
-
-    throw new Error(message);
-  }
-
-  if (data?.error) {
-    throw new Error(data.error);
+    console.error("INVITE ERROR:", error);
+    throw new Error(error.message || "Failed to send invite.");
   }
 
   return data;
