@@ -420,6 +420,7 @@ export default function AdminHeader({ onMenuClick }) {
 
               <div className="py-1.5">
                 <Link
+                  to="/admin/profile"
                   className="relative flex cursor-default select-none items-center gap-2 rounded-sm px-2 py-1.5 text-sm outline-none transition-colors focus:bg-accent focus:text-accent-foreground data-disabled:pointer-events-none data-disabled:opacity-50 hover:bg-surface-muted"
                   onClick={() => setOpenMenu(null)}
                 >
@@ -428,6 +429,7 @@ export default function AdminHeader({ onMenuClick }) {
                 </Link>
 
                 <Link
+                  to="/admin/settings"
                   className="relative flex cursor-default select-none items-center gap-2 rounded-sm px-2 py-1.5 text-sm outline-none transition-colors focus:bg-accent focus:text-accent-foreground data-disabled:pointer-events-none data-disabled:opacity-50 hover:bg-surface-muted"
                   onClick={() => setOpenMenu(null)}
                 >
